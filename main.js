@@ -11,8 +11,11 @@ const detectorConfig = {
 }
 const detector = await handPoseDetection.createDetector(model, detectorConfig);
 
-const player = document.getElementById("player");
-const debug = document.getElementById("debug");
+const player = document.createElement("video");
+player.autoplay = true;
+const debug = document.createElement("div");
+document.body.appendChild(debug);
+document.body.appendChild(player);
 
 // Attach the video stream to the video element and autoplay.
 let awaitingPreviousHandEstimation = false;
