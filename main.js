@@ -42,30 +42,44 @@ navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
         // Move the mouse to the correct location
         if (hands && hands.length > 0) {
             const thumbTipKeypoint = [...hands[0].keypoints].filter(x => x.name === "thumb_tip")[0];
-            const cursorLeftPixels = thumbTipKeypoint.x / player.getBoundingClientRect().width * screen.width;
-            const cursorTopPixels = thumbTipKeypoint.y / player.getBoundingClientRect().height * screen.height;
-            mouse.style.transform = `translate(${screen.width - cursorLeftPixels}px, ${cursorTopPixels}px)`;
+            if (hands.length === 1) {
+                const cursorLeftPixels = thumbTipKeypoint.x / player.getBoundingClientRect().width * screen.width;
+                const cursorTopPixels = thumbTipKeypoint.y / player.getBoundingClientRect().height * screen.height;
+                mouse.style.transform = `translate(${screen.width - cursorLeftPixels}px, ${document.documentElement.scrollTop + cursorTopPixels}px)`;
 
-            // Detect if there is a click
-            const indexFingerTipKeypoint = [...hands[0].keypoints].filter(x => x.name === "index_finger_tip")[0];
-            const separation = Math.pow(indexFingerTipKeypoint.x - thumbTipKeypoint.x, 2) + 
-                Math.pow(indexFingerTipKeypoint.y - thumbTipKeypoint.y, 2);
-                
-            const isSeparationBelowThreshold = separation < SEPARATION_THRESHOLD;
-            if (isSeparationBelowThreshold !== isMouseDown) {
-                clearTimeout(stabilizeTimeout);
-                isMouseDown = isSeparationBelowThreshold;
-                if (isMouseDown !== isMouseDownStabilized) {
-                    stabilizeTimeout = setTimeout(() => {
-                        isMouseDownStabilized = isMouseDown;
-                        // Dispatch click
-                        if (isMouseDownStabilized) {
-                            console.log("click");
-                            document.elementFromPoint(screen.width - cursorLeftPixels, cursorTopPixels).click();
-                        }
-                    }, DEBOUNCE_TIME);
+                // Detect if there is a click
+                const indexFingerTipKeypoint = [...hands[0].keypoints].filter(x => x.name === "index_finger_tip")[0];
+                const separation = Math.pow(indexFingerTipKeypoint.x - thumbTipKeypoint.x, 2) + 
+                    Math.pow(indexFingerTipKeypoint.y - thumbTipKeypoint.y, 2);
+                    
+                const isSeparationBelowThreshold = separation < SEPARATION_THRESHOLD;
+                if (isSeparationBelowThreshold !== isMouseDown) {
+                    clearTimeout(stabilizeTimeout);
+                    isMouseDown = isSeparationBelowThreshold;
+                    if (isMouseDown !== isMouseDownStabilized) {
+                        stabilizeTimeout = setTimeout(() => {
+                            isMouseDownStabilized = isMouseDown;
+                            // Dispatch click
+                            if (isMouseDownStabilized) {
+                                console.log("click");
+                                document.elementFromPoint(screen.width - cursorLeftPixels, cursorTopPixels).click();
+                            }
+                        }, DEBOUNCE_TIME);
+                    }
                 }
             }
+
+            // Detect if we are scrolling
+            if (hands.length === 2) {
+                const thumbIpKeypoint = [...hands[0].keypoints].filter(x => x.name === "thumb_ip")[0];
+                const isScrolling = Math.abs(thumbIpKeypoint.y - thumbTipKeypoint.y) > 20;
+                const isDirectionUp = thumbIpKeypoint.y > thumbTipKeypoint.y;
+                if (isScrolling) {
+                    const currentTop = document.documentElement.scrollTop || document.body.scrollTop;
+                    document.documentElement.scrollTop = document.body.scrollTop = currentTop + (isDirectionUp ? -10 : 10);
+                }
+            }
+            
             
             // Ensure that the cursor has the highest z index
             const allElements = [...document.querySelectorAll("*")].filter(x => x.id !== "vision-mouse");
