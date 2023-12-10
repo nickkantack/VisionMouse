@@ -20,7 +20,7 @@ document.body.appendChild(player);
 
 const mouse = document.createElement("div");
 mouse.id = "vision-mouse";
-mouse.style = `position: absolute; left: 0; top: 0; width: 10px; height: 10px; z-index: 100; background: #000; pointer-events: none;`;
+mouse.style = `position: absolute; left: 0; top: 0; width: 10px; height: 10px; z-index: ${Math.pow(10, 30)}; background: #000; pointer-events: none;`;
 document.body.appendChild(mouse);
 
 let isMouseDownStabilized = false;
