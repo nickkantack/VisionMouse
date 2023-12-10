@@ -19,8 +19,15 @@ document.body.appendChild(debug);
 document.body.appendChild(player);
 
 const mouse = document.createElement("div");
-mouse.style = `position: absolute; left: 0; top: 0; width: 10px; height: 10px; z-index: 100; background: #000;`;
+mouse.style = `position: absolute; left: 0; top: 0; width: 10px; height: 10px; z-index: 100; background: #000; pointer-events: none;`;
 document.body.appendChild(mouse);
+
+let isMouseDownStabilized = false;
+let isMouseDown = false;
+let lastMouseDownStabilizedChangeTime = 0;
+let stabilizeTimeout;
+const SEPARATION_THRESHOLD = 500;
+const DEBOUNCE_TIME = 50;
 
 // Attach the video stream to the video element and autoplay.
 let awaitingPreviousHandEstimation = false;
@@ -31,7 +38,6 @@ navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
         awaitingPreviousHandEstimation = true;
         const hands = await detector.estimateHands(player);
         awaitingPreviousHandEstimation = false;
-        debug.innerHTML = hands && hands.length > 0 ? hands[0].score : 0;
         
         // Move the mouse to the correct location
         if (hands && hands.length > 0) {
@@ -39,9 +45,28 @@ navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
             const cursorLeftPixels = thumbTipKeypoint.x / player.getBoundingClientRect().width * screen.width;
             const cursorTopPixels = thumbTipKeypoint.y / player.getBoundingClientRect().height * screen.height;
             mouse.style.transform = `translate(${screen.width - cursorLeftPixels}px, ${cursorTopPixels}px)`;
-        }
 
-        // Use document.elementFromPoint(x, y).click(); to click things
+            // Detect if there is a click
+            const indexFingerTipKeypoint = [...hands[0].keypoints].filter(x => x.name === "index_finger_tip")[0];
+            const separation = Math.pow(indexFingerTipKeypoint.x - thumbTipKeypoint.x, 2) + 
+                Math.pow(indexFingerTipKeypoint.y - thumbTipKeypoint.y, 2);
+                
+            const isSeparationBelowThreshold = separation < SEPARATION_THRESHOLD;
+            if (isSeparationBelowThreshold !== isMouseDown) {
+                clearTimeout(stabilizeTimeout);
+                isMouseDown = isSeparationBelowThreshold;
+                if (isMouseDown !== isMouseDownStabilized) {
+                    stabilizeTimeout = setTimeout(() => {
+                        isMouseDownStabilized = isMouseDown;
+                        // Dispatch click
+                        if (isMouseDownStabilized) {
+                            console.log("click");
+                            document.elementFromPoint(screen.width - cursorLeftPixels, cursorTopPixels).click();
+                        }
+                    }, DEBOUNCE_TIME);
+                }
+            }
+        }
 
         requestAnimationFrame(callback);
     };
