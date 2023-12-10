@@ -19,6 +19,7 @@ document.body.appendChild(debug);
 document.body.appendChild(player);
 
 const mouse = document.createElement("div");
+mouse.id = "vision-mouse";
 mouse.style = `position: absolute; left: 0; top: 0; width: 10px; height: 10px; z-index: 100; background: #000; pointer-events: none;`;
 document.body.appendChild(mouse);
 
@@ -66,6 +67,15 @@ navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
                     }, DEBOUNCE_TIME);
                 }
             }
+            
+            // Ensure that the cursor has the highest z index
+            const allElements = [...document.querySelectorAll("*")].filter(x => x.id !== "vision-mouse");
+            let highestZIndex = parseInt(mouse.style.zIndex) - 1;
+            for (let element of allElements) {
+                const rivalIndex = parseInt(element.style.zIndex) || 1;
+                if (rivalIndex > highestZIndex) highestZIndex = rivalIndex;
+            }
+            mouse.style.zIndex = highestZIndex + 1;
         }
 
         requestAnimationFrame(callback);
