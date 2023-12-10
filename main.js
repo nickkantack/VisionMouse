@@ -14,6 +14,7 @@ const detector = await handPoseDetection.createDetector(model, detectorConfig);
 // Create DOM elements
 const player = document.createElement("video");
 player.autoplay = true;
+player.style = `position: fixed; left: 0; top: 0; width: 20%;`;
 const debug = document.createElement("div");
 document.body.appendChild(debug);
 document.body.appendChild(player);
@@ -43,8 +44,9 @@ navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
         if (hands && hands.length > 0) {
             const thumbTipKeypoint = [...hands[0].keypoints].filter(x => x.name === "thumb_tip")[0];
             if (hands.length === 1) {
-                const cursorLeftPixels = thumbTipKeypoint.x / player.getBoundingClientRect().width * screen.width;
-                const cursorTopPixels = thumbTipKeypoint.y / player.getBoundingClientRect().height * screen.height;
+                console.log(thumbTipKeypoint.x);
+                const cursorLeftPixels = thumbTipKeypoint.x / 630 * screen.width;
+                const cursorTopPixels = thumbTipKeypoint.y / 630 * screen.height;
                 mouse.style.transform = `translate(${screen.width - cursorLeftPixels}px, ${document.documentElement.scrollTop + cursorTopPixels}px)`;
 
                 // Detect if there is a click
