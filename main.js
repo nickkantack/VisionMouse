@@ -25,7 +25,6 @@ document.body.appendChild(mouse);
 
 let isMouseDownStabilized = false;
 let isMouseDown = false;
-let lastMouseDownStabilizedChangeTime = 0;
 let stabilizeTimeout;
 const SEPARATION_THRESHOLD = 500;
 const DEBOUNCE_TIME = 50;
