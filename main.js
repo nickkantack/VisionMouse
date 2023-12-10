@@ -74,7 +74,6 @@ navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
                 const rivalIndex = parseInt(element.style.zIndex) || 1;
                 if (rivalIndex > highestZIndex) highestZIndex = rivalIndex;
             }
-            console.log(`Setting ${highestZIndex + 1}`);
             mouse.style.zIndex = highestZIndex + 1;
         }
 
