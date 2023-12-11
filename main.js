@@ -74,7 +74,7 @@ navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
         // Move the mouse to the correct location
         if (hands && hands.length > 0) {
             const thumbTipKeypoint = [...hands[0].keypoints].filter(x => x.name === "thumb_tip")[0];
-            thumbDot.style.transform = `translate(${thumbTipKeypoint.x / 630 * 189}px, ${thumbTipKeypoint.y / 430 * 141 - 20}px)`;
+            thumbDot.style.transform = `translate(${thumbTipKeypoint.x / 630 * 295}px, ${thumbTipKeypoint.y / 430 * 200 - 10}px)`;
             if (hands.length === 1) {
                 const cursorLeftPixels = thumbTipKeypoint.x / 630 * screen.width;
                 const cursorTopPixels = thumbTipKeypoint.y / 630 * screen.height;
@@ -82,7 +82,7 @@ navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
 
                 // Detect if there is a click
                 const indexFingerTipKeypoint = [...hands[0].keypoints].filter(x => x.name === "index_finger_tip")[0];
-                indexDot.style.transform = `translate(${indexFingerTipKeypoint.x / 630 * 189}px, ${indexFingerTipKeypoint.y / 430 * 141 - 20}px)`;
+                indexDot.style.transform = `translate(${indexFingerTipKeypoint.x / 630 * 295}px, ${indexFingerTipKeypoint.y / 430 * 200 - 10}px)`;
                 indexDot.style.display = "block";
                 const separation = Math.pow(indexFingerTipKeypoint.x - thumbTipKeypoint.x, 2) + 
                     Math.pow(indexFingerTipKeypoint.y - thumbTipKeypoint.y, 2);
