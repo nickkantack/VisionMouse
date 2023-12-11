@@ -39,7 +39,7 @@ circle.setAttribute("cy", "50");
 circle.setAttribute("r", "40");
 circle.setAttribute("stroke", "none");
 circle.setAttribute("fill", "#F00");
-thumbDot.style = `position: fixed; left: 0; top: 0; width: 10px; height: 10px; z-index: 10; pointer-events: none;`;
+thumbDot.style = `position: fixed; left: 0; top: 0; width: 10px; height: 10px; z-index: 1000001; pointer-events: none;`;
 thumbDot.appendChild(circle);
 document.body.appendChild(thumbDot);
 
@@ -51,7 +51,7 @@ circle2.setAttribute("cy", "50");
 circle2.setAttribute("r", "40");
 circle2.setAttribute("stroke", "none");
 circle2.setAttribute("fill", "#00F");
-indexDot.style = `position: fixed; left: 0; top: 0; width: 10px; height: 10px; z-index: 10; pointer-events: none;`;
+indexDot.style = `position: fixed; left: 0; top: 0; width: 10px; height: 10px; z-index: 1000001; pointer-events: none;`;
 indexDot.appendChild(circle2);
 document.body.appendChild(indexDot);
 
