@@ -14,7 +14,7 @@ const detector = await handPoseDetection.createDetector(model, detectorConfig);
 // Create DOM elements
 const player = document.createElement("video");
 player.autoplay = true;
-player.style = `position: fixed; left: 0; top: 0; width: 20%;`;
+player.style = `position: fixed; left: 0; top: 0; width: 20%; z-index: 1000000;`;
 const debug = document.createElement("div");
 document.body.appendChild(debug);
 document.body.appendChild(player);
